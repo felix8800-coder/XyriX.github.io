@@ -57,8 +57,8 @@
     tableBody.replaceChildren();
 
     const { data, error } = await supabaseClient
-      .from('your_table')
-      .select('name, age')
+      .from('User')
+      .select('Username, Password')
       .limit(100);
 
     if (error) {
