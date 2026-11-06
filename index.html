@@ -29,7 +29,6 @@
   }
 </script>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <button id="loadButton">Загрузить записи</button>
 <p id="status"></p>
@@ -57,7 +56,7 @@
     tableBody.replaceChildren();
 
     const { data, error } = await supabaseClient
-      .from('User')
+      .from('Users')
       .select('Username, Password')
       .limit(100);
 
@@ -97,7 +96,6 @@
   }
 </script>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <form id="signupForm">
   <label>
