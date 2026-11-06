@@ -1,1 +1,155 @@
-привет
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<button onclick="insertRow()">Добавить запись</button>
+
+<script>
+  const SUPABASE_URL = 'https://nbqbiuigxcgimildmrue.supabase.co';
+  const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_w9lwLmgmrANKStqzxPQflg_lRuUWuDG';
+
+  const supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    'sb_publishable_w9lwLmgmrANKStqzxPQflg_lRuUWuDG'
+  );
+
+  async function insertRow() {
+    const { error } = await supabaseClient
+      .from('Users')
+      .insert({
+        Username: 'User1',
+        Password: Pass
+      });
+
+    if (error) {
+      console.error('Ошибка вставки:', error.message);
+      alert('Не удалось сохранить запись');
+      return;
+    }
+
+    alert('Запись добавлена');
+  }
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<button id="loadButton">Загрузить записи</button>
+<p id="status"></p>
+
+<table>
+  <thead id="tableHead"></thead>
+  <tbody id="tableBody"></tbody>
+</table>
+
+<script>
+
+  const columns = ['Username', 'Password'];
+
+  document
+    .getElementById('loadButton')
+    .addEventListener('click', loadRows);
+
+  async function loadRows() {
+    const status = document.getElementById('status');
+    const tableHead = document.getElementById('tableHead');
+    const tableBody = document.getElementById('tableBody');
+
+    status.textContent = 'Загрузка...';
+    tableHead.replaceChildren();
+    tableBody.replaceChildren();
+
+    const { data, error } = await supabaseClient
+      .from('your_table')
+      .select('name, age')
+      .limit(100);
+
+    if (error) {
+      status.textContent = 'Ошибка: ' + error.message;
+      return;
+    }
+
+    const headerRow = document.createElement('tr');
+
+    columns.forEach((column) => {
+      const th = document.createElement('th');
+      th.textContent = column;
+      headerRow.appendChild(th);
+    });
+
+    tableHead.appendChild(headerRow);
+
+    if (!data || data.length === 0) {
+      status.textContent = 'Записей пока нет.';
+      return;
+    }
+
+    data.forEach((row) => {
+      const tr = document.createElement('tr');
+
+      columns.forEach((column) => {
+        const td = document.createElement('td');
+        td.textContent = row[column] == null ? '' : String(row[column]);
+        tr.appendChild(td);
+      });
+
+      tableBody.appendChild(tr);
+    });
+
+    status.textContent = `Загружено записей: ${data.length}`;
+  }
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<form id="signupForm">
+  <label>
+    Имя
+    <input id="name" type="text" autocomplete="name" required>
+  </label>
+
+  <label>
+    Email
+    <input id="email" type="email" autocomplete="email" required>
+  </label>
+
+  <label>
+    Пароль
+    <input id="password" type="password" autocomplete="new-password" required>
+  </label>
+
+  <button type="submit">Зарегистрироваться</button>
+</form>
+
+<p id="status"></p>
+
+<script>
+  
+
+  document
+    .getElementById('signupForm')
+    .addEventListener('submit', async (event) => {
+      event.preventDefault();
+
+      const status = document.getElementById('status');
+      const name = document.getElementById('name').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+
+      status.textContent = 'Создаём аккаунт...';
+
+      const { data, error } = await supabaseClient.auth.signUp({
+        email,
+        password,
+        options: {
+          data: { name }
+        }
+      });
+
+      if (error) {
+        status.textContent = 'Ошибка: ' + error.message;
+        return;
+      }
+
+      status.textContent = data.session
+        ? 'Аккаунт создан.'
+        : 'Регистрация отправлена. Проверьте почту, если требуется подтверждение email.';
+    });
+</script>
